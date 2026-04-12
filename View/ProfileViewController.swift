@@ -20,10 +20,13 @@ class ProfileViewController: UIViewController,UIImagePickerControllerDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadUserData()
+    }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         profileImageView.makeCircular()
         profileImageView.isUserInteractionEnabled = true
-        loadUserData()
     }
    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -32,6 +35,7 @@ class ProfileViewController: UIViewController,UIImagePickerControllerDelegate, U
         if let editedImage = info[.editedImage] as? UIImage {
             // 2. نعرض الصورة فوراً لليوزر عشان يحس إنها اتغيرت
             self.profileImageView.image = editedImage
+            self.profileImageView.makeCircular() // Re-apply the circle immediately
             
             // 3. ننادي دالة الرفع (هنعملها دلوقتي)
             self.uploadProfileImage(image: editedImage)

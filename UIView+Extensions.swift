@@ -10,9 +10,13 @@ import UIKit
 
 extension UIView {
     
-    func makeCircular(){
-        self.layer.cornerRadius = self.frame.size.width/2
+    func makeCircular() {
+        self.contentMode = .scaleAspectFill
+        self.layer.masksToBounds = true
         self.clipsToBounds = true
+        self.layoutIfNeeded()
+        let size = min(self.bounds.width, self.bounds.height)
+        self.layer.cornerRadius = size / 2
     }
     func makeRounded(radius: CGFloat = 15){
         self.layer.cornerRadius = radius
