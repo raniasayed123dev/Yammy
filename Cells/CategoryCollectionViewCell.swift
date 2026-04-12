@@ -13,5 +13,8 @@ class CategoryCollectionViewCell: UICollectionViewCell {
      func configure(with category: Category) {
          categoryImageView.image = UIImage(named: category.imageName)
          categoryNameLabel.text = category.name
+         categoryImageView.makeCircular()
+         
+        categoryNameLabel.makeRounded(radius: 10)
     }
 }

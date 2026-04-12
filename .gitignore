@@ -1,0 +1,74 @@
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## User settings
+xcuserdata/
+
+## Xcode patch files
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager
+#
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# /Packages
+# Project.swift is used in tuist and should be overlooked
+# Project.swift
+.build/
+
+# CocoaPods
+#
+# We recommend against adding the Pods directory to your repository. However, if you choose to do so,
+# please remove the "Pods/" line below.
+Pods/
+DerivedData/
+
+# GNU Global
+#
+# If you use GNU Global for source code navigation, you can uncomment the following line to ignore its data files.
+# GTAGS
+# GRTAGS
+# GPATH
+
+# Carthage
+#
+# Carthage generates its own dependencies in a Carthage directory.
+# Carthage/Build
+
+# AccuRev
+#
+# If you use AccuRev for source control, you can uncomment parameters below to ignore its storage files.
+# .accurev/
+
+# Fastlane
+#
+# If you use fastlane to automate your development process, you can uncomment parameter below to ignore its log files.
+# fastlane/report.xml
+# fastlane/Preview.html
+# fastlane/screenshots/
+# fastlane/test_output/
+
+# Code Injection
+#
+# If you use code injection (e.g. InjectionIII), you can uncomment parameter below to ignore its cache files.
+# .injection/
+
+# macOS
+#
+# Generic macOS files
+.DS_Store
+*.swp
+*~.nib
+
+# Firebase
+# GoogleService-Info.plist is often kept in git for shared development, 
+# but uncomment the next line if you want to keep it private.
+# Yammy/GoogleService-Info.plist

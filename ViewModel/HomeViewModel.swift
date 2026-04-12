@@ -31,7 +31,7 @@ class HomeViewModel {
         categories[index]
     }
     private func loadMeals() {
-        meals = [Meal(name: "Burger", imageName: "burger3", price: 40),Meal(name: "Pizza", imageName: "pizza", price: 80.5),Meal(name: "Fries", imageName: "fries", price: 20.5) , Meal(name: "Soda", imageName: "soda", price: 10)]
+        meals = [Meal(id: "100", name: "Cheese Burger", imageName: "burger3", basePrice: 40),Meal(id: "200", name: "Margherita", imageName: "pizza",basePrice: 80.5),Meal(id: "300", name: "Fries", imageName: "fries", basePrice: 20.5) , Meal(id: "400", name: "Soda", imageName: "soda", basePrice: 10)]
     }
     func priceText( for meal : Meal ) -> String{
        "\(meal.price) EGP"
@@ -41,5 +41,8 @@ class HomeViewModel {
     }
     func meal(at index: Int) -> Meal {
       meals[index]
+    }
+    func getAllCurrentMeals() -> [Meal] {
+        return meals
     }
 }
