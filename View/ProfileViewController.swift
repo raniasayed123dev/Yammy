@@ -22,7 +22,8 @@ class ProfileViewController: UIViewController,UIImagePickerControllerDelegate, U
         super.viewDidLoad()
     
         profileImageView.makeCircular()
-       loadUserData()
+        profileImageView.isUserInteractionEnabled = true
+        loadUserData()
     }
    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -81,12 +82,30 @@ class ProfileViewController: UIViewController,UIImagePickerControllerDelegate, U
             }}
     }
     @IBAction func imageTapped(_ sender: Any) {
-        let imagePicker = UIImagePickerController()
-            imagePicker.delegate = self // إنتي كدة بتقولي للأبلكيشن "أنا المسؤولة عن اختيار الصورة"
-            imagePicker.sourceType = .photoLibrary
-            imagePicker.allowsEditing = true // عشان اليوزر يقص الصورة ويظبطها
-            present(imagePicker, animated: true)
+        let alert = UIAlertController(title: "Choose Profile Image", message: nil, preferredStyle: .actionSheet)
+        
+        // Gallery Option
+        alert.addAction(UIAlertAction(title: "Photo Library", style: .default, handler: { _ in
+            self.openPicker(source: .photoLibrary)
+        }))
+        
+        // Camera Option (if available)
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            alert.addAction(UIAlertAction(title: "Camera", style: .default, handler: { _ in
+                self.openPicker(source: .camera)
+            }))
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true)
+    }
 
+    private func openPicker(source: UIImagePickerController.SourceType) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = source
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
     }
     @IBAction func facebookTapped(_ sender: Any) {
         
