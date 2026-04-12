@@ -60,6 +60,14 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 
     func loadUserData() {
+        if UserDefaults.standard.bool(forKey: "isSocialLogin") {
+            emailLabel.text = "social.demo@yammy.com"
+            nameLabel.text = "Yammy Social User"
+            profileImageView.image = UIImage(systemName: "person.circle.fill")
+            profileImageView.tintColor = UIColor(named: "PrimaryColor")
+            return
+        }
+
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let user = Auth.auth().currentUser
         
@@ -105,12 +113,37 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
 
     @IBAction func facebookTapped(_ sender: Any) {
+        shareApp(via: "Facebook")
     }
     
     @IBAction func twitterTapped(_ sender: Any) {
+        shareApp(via: "Twitter")
+    }
+
+    private func shareApp(via platform: String) {
+        let appName = "Yammy 🍔"
+        let message = "I'm using \(appName) to order delicious food! You should try it too 🎉"
+        let shareURL = URL(string: "https://www.yammy-app.com") // Replace with your real app link
+        
+        var itemsToShare: [Any] = [message]
+        if let url = shareURL {
+            itemsToShare.append(url)
+        }
+        
+        let activityVC = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+        
+        // On iPad, the popover needs an anchor
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = self.view
+            popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        
+        present(activityVC, animated: true)
     }
     
     @IBAction func logoutTapped(_ sender: Any) {
+        UserDefaults.standard.set(false, forKey: "isSocialLogin")
         let firebaseAuth = Auth.auth()
         do {
             try firebaseAuth.signOut()

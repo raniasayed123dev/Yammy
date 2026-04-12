@@ -8,11 +8,31 @@ class SignInViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var signinButton: UIButton!
+    @IBOutlet weak var facebookImageView: UIImageView!
+    @IBOutlet weak var twitterImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.keyboardLayoutGuide.followsUndockedKeyboard = true
         setupUI()
+        setupSocialLoginGestures()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if ((notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= 250
+            }
+        }
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     
     @IBAction func signInBotton(_ sender: Any) {
@@ -59,6 +79,47 @@ class SignInViewController: UIViewController {
         
         present(alert, animated: true)
     }
+
+    private func setupSocialLoginGestures() {
+        let facebookTap = UITapGestureRecognizer(target: self, action: #selector(facebookTapped))
+        facebookImageView.addGestureRecognizer(facebookTap)
+        facebookImageView.isUserInteractionEnabled = true
+
+        let twitterTap = UITapGestureRecognizer(target: self, action: #selector(twitterTapped))
+        twitterImageView.addGestureRecognizer(twitterTap)
+        twitterImageView.isUserInteractionEnabled = true
+    }
+
+    @objc private func facebookTapped() {
+        handleSocialLogin(platform: "Facebook")
+    }
+
+    @objc private func twitterTapped() {
+        handleSocialLogin(platform: "Twitter")
+    }
+
+    private func handleSocialLogin(platform: String) {
+        let alert = UIAlertController(title: "Sign in with \(platform)", 
+                                    message: "Would you like to sign in using your \(platform) account?", 
+                                    preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+            self?.view.showLoadingOverlay()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self?.view.hideLoadingOverlay()
+                UserDefaults.standard.set(true, forKey: "isSocialLogin")
+                self?.navigateToHome()
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(confirmAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
 }
 
 extension SignInViewController {
@@ -84,7 +145,26 @@ extension SignInViewController {
             $0?.leftViewMode = .always
         }
         
+        setupPasswordToggle(for: passwordTextField)
         validateFields()
+    }
+
+    private func setupPasswordToggle(for textField: UITextField) {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(systemName: "eye.slash"), for: .normal)
+        button.setImage(UIImage(systemName: "eye"), for: .selected)
+        button.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
+        button.addTarget(self, action: #selector(togglePasswordView), for: .touchUpInside)
+        button.tintColor = .gray
+        textField.rightView = button
+        textField.rightViewMode = .always
+    }
+
+    @objc private func togglePasswordView(_ sender: UIButton) {
+        sender.isSelected.toggle()
+        if let textField = sender.superview as? UITextField {
+            textField.isSecureTextEntry.toggle()
+        }
     }
 
     @objc private func validateFields() {
@@ -137,6 +217,10 @@ extension SignInViewController {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+
+    @IBAction func backButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -40,4 +40,21 @@ extension UIView {
         self.layer.shadowOpacity = 0.1
         self.layer.masksToBounds = false
     }
+
+    func showLoadingOverlay() {
+        if self.viewWithTag(999) != nil { return }
+        let overlay = UIView(frame: self.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        overlay.tag = 999
+        let activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.color = .white
+        activityIndicator.center = overlay.center
+        activityIndicator.startAnimating()
+        overlay.addSubview(activityIndicator)
+        self.addSubview(overlay)
+    }
+
+    func hideLoadingOverlay() {
+        self.viewWithTag(999)?.removeFromSuperview()
+    }
 }
