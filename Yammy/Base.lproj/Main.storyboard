@@ -52,15 +52,15 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="70" height="100"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OAy-2x-tRg">
-                                                            <rect key="frame" x="0.0" y="0.0" width="70" height="80"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="70" height="90"/>
                                                             <color key="backgroundColor" red="0.15385904719999999" green="0.35451187909999998" blue="0.47946635250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="80" id="Vn6-Uu-271"/>
-                                                                <constraint firstAttribute="height" constant="80" id="pFf-qz-gzM"/>
+                                                                <constraint firstAttribute="width" constant="90" id="Vn6-Uu-271"/>
+                                                                <constraint firstAttribute="height" constant="90" id="pFf-qz-gzM"/>
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N4P-8B-FLA">
-                                                            <rect key="frame" x="0.0" y="84" width="70" height="16"/>
+                                                            <rect key="frame" x="0.0" y="94" width="70" height="6"/>
                                                             <color key="backgroundColor" red="0.85571444419999998" green="0.89344487299999997" blue="0.89474888389999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="70" id="QOz-0h-3b3"/>
@@ -119,12 +119,12 @@
                                                 <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="NjN-nb-gfN">
                                                     <rect key="frame" x="8" y="8" width="334" height="134"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CS6-9m-yUk">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CS6-9m-yUk">
                                                             <rect key="frame" x="0.0" y="0.0" width="165" height="134"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="130" id="Mu8-qR-fx8"/>
-                                                                <constraint firstAttribute="width" constant="130" id="fs6-Ct-jb6"/>
+                                                                <constraint firstAttribute="height" constant="150" id="Mu8-qR-fx8"/>
+                                                                <constraint firstAttribute="width" constant="150" id="fs6-Ct-jb6"/>
                                                             </constraints>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="center" axis="vertical" distribution="fillEqually" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="21g-YA-bvd">
@@ -288,10 +288,10 @@
                                                     <rect key="frame" x="10" y="10" width="373" height="151"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OF3-0M-voH">
-                                                            <rect key="frame" x="0.0" y="0.6666666666666714" width="181.66666666666666" height="150"/>
+                                                            <rect key="frame" x="0.0" y="10.666666666666671" width="181.66666666666666" height="130"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="150" id="cnZ-Qh-syb"/>
-                                                                <constraint firstAttribute="width" constant="150" id="wYk-3i-ASV"/>
+                                                                <constraint firstAttribute="height" constant="130" id="cnZ-Qh-syb"/>
+                                                                <constraint firstAttribute="width" constant="130" id="wYk-3i-ASV"/>
                                                             </constraints>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="wrc-EJ-4CJ">
@@ -731,7 +731,7 @@
                                                                     <color key="textColor" red="0.15385904719999999" green="0.35451187909999998" blue="0.47946635250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mealPrice" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H8p-ce-7NH">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mealPrice" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H8p-ce-7NH">
                                                                     <rect key="frame" x="0.0" y="41.666666666666664" width="122.33333333333333" height="21.666666666666664"/>
                                                                     <color key="backgroundColor" red="0.85571444419999998" green="0.89344487299999997" blue="0.89474888389999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -1285,10 +1285,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="fdG-3h-2tC">
-                                <rect key="frame" x="96.666666666666686" y="101.66666666666667" width="200" height="146.66666666666669"/>
+                                <rect key="frame" x="121.66666666666669" y="101.66666666666667" width="150" height="146.66666666666669"/>
                                 <color key="tintColor" red="0.15385904719999999" green="0.35451187909999998" blue="0.47946635250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="KKK-XL-ffB"/>
+                                    <constraint firstAttribute="width" constant="150" id="KKK-XL-ffB"/>
                                     <constraint firstAttribute="height" constant="150" id="xvD-fJ-X4c"/>
                                 </constraints>
                             </imageView>

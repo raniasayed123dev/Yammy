@@ -1,10 +1,3 @@
-//
-//  MenuViewModel.swift
-//  Yammy
-//
-//  Created by rania on 19/12/2025.
-//
-
 import Foundation
 
 class MenuViewModel {
@@ -19,7 +12,15 @@ class MenuViewModel {
         Menu(title: "Pizzas", meals: [
             Meal(id: "200", name: "Margherita", imageName: "pizza", basePrice: 60),
             Meal(id: "201", name: "Pepperoni", imageName: "Pepperoni", basePrice: 70)
-        ]),Menu(title: "Drinks",meals: [Meal(id: "400", name: "Soda", imageName: "soda", basePrice: 6),Meal(id: "401", name: "Juice", imageName: "juice", basePrice: 10)]),Menu(title: "Fries", meals: [Meal(id: "300", name: "Fries", imageName: "fries", basePrice: 10.5)])]
+        ]),
+        Menu(title: "Drinks", meals: [
+            Meal(id: "400", name: "Soda", imageName: "soda", basePrice: 6),
+            Meal(id: "401", name: "Juice", imageName: "juice", basePrice: 10)
+        ]),
+        Menu(title: "Fries", meals: [
+            Meal(id: "300", name: "Fries", imageName: "fries", basePrice: 10.5)
+        ])
+    ]
     
     func fetchMeals(for categoryName: String) {
         if let selectedMenu = allMenus.first(where: { $0.title == categoryName }) {

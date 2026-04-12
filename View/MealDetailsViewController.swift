@@ -1,10 +1,3 @@
-//
-//  MealDetailsViewController.swift
-//  Yammy
-//
-//  Created by rania on 19/12/2025.
-//
-
 import UIKit
 
 class MealDetailsViewController: UIViewController {
@@ -16,28 +9,30 @@ class MealDetailsViewController: UIViewController {
     @IBOutlet weak var quantityLabel: UILabel!
     @IBOutlet weak var favoriteButton: UIButton!
     @IBOutlet weak var sizeSegmentedControl: UISegmentedControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationController?.navigationBar.prefersLargeTitles = false
-            self.additionalSafeAreaInsets = UIEdgeInsets(top: -view.safeAreaInsets.top, left: 0, bottom: 0, right: 0)
+        self.additionalSafeAreaInsets = UIEdgeInsets(top: -view.safeAreaInsets.top, left: 0, bottom: 0, right: 0)
       
         if let meal = selectedMeal {
-        let isFav = DataManager.shared.isFavorite(meal: meal)
-        updateFavoriteButton(isFavorite: isFav)
+            let isFav = DataManager.shared.isFavorite(meal: meal)
+            updateFavoriteButton(isFavorite: isFav)
         }
+        
         if let mealData = selectedMeal {
-                setupUI(with: mealData)
-                let isFav = DataManager.shared.isFavorite(meal: mealData)
-                updateFavoriteButton(isFavorite: isFav)
-            }
+            setupUI(with: mealData)
+            let isFav = DataManager.shared.isFavorite(meal: mealData)
+            updateFavoriteButton(isFavorite: isFav)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationItem.largeTitleDisplayMode = .never
         let appearance = UINavigationBarAppearance()
-            appearance.configureWithTransparentBackground()
+        appearance.configureWithTransparentBackground()
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.tintColor = .systemRed
@@ -47,19 +42,18 @@ class MealDetailsViewController: UIViewController {
         mealName.text = meal.name
         mealPrice.text = "\(meal.price) EGP"
         if let image = UIImage(named: meal.imageName) {
-                mealImage.image = image
+            mealImage.image = image
         } else {
             mealImage.image = UIImage(named: "burger3")
         }
-        mealImage.layer.cornerRadius = 20
-        mealImage.clipsToBounds = true
+        mealImage.makeRounded(radius: 20)
     }
-
     
     func updateFavoriteButton(isFavorite: Bool) {
-    let imageName = isFavorite ? "heart.fill" : "heart"
-    favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
+        let imageName = isFavorite ? "heart.fill" : "heart"
+        favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
+    
     @IBAction func favoriteTapped(_ sender: Any) {
         if let meal = selectedMeal {
             DataManager.shared.toggleFavorite(meal: meal)
@@ -67,14 +61,15 @@ class MealDetailsViewController: UIViewController {
             updateFavoriteButton(isFavorite: isFav)
         }
     }
+    
     @IBAction func quantityChanged(_ sender: UIStepper) {
         let currentQuantity = Int(sender.value)
-            quantityLabel.text = "\(currentQuantity)"
+        quantityLabel.text = "\(currentQuantity)"
         selectedMeal?.quantity = currentQuantity
         if let meal = selectedMeal {
-                let totalPrice = meal.price * Double(meal.quantity)
-                mealPrice.text = "\(totalPrice) EGP"
-            }
+            let totalPrice = meal.price * Double(meal.quantity)
+            mealPrice.text = "\(totalPrice) EGP"
+        }
     }
     
     @IBAction func sizeChanged(_ sender: UISegmentedControl) {
@@ -84,9 +79,9 @@ class MealDetailsViewController: UIViewController {
         if let meal = selectedMeal {
             let totalPrice = meal.price * Double(meal.quantity)
             mealPrice.text = "\(totalPrice) EGP"
-           
         }
     }
+    
     @IBAction func addToCartTapped(_ sender: Any) {
         guard var meal = selectedMeal else { return }
         
@@ -96,23 +91,14 @@ class MealDetailsViewController: UIViewController {
         
         let isAlreadyInCart = DataManager.shared.addToCart(meal: meal)
         
-        if isAlreadyInCart {
-               let _  = "تم تحديث الكمية في السلة بنجاح لـ \(meal.name)"
-            } else {
-               let _  = "تم إضافة \(meal.name) للسلة بنجاح"
-            }
+        let successMessage = isAlreadyInCart ? "Quantity updated in cart for \(meal.name)" : "\(meal.name) added to cart successfully"
+        print("Cart Update: \(successMessage)")
        
-            meal.selectedSize = selectedSize
+        meal.selectedSize = selectedSize
         
-        let alert = UIAlertController(title: "Add to Cart", message:"if you want to add \(meal.name) press on the agree ", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Agree", style:.default))
+        let alert = UIAlertController(title: "Add to Cart", message: "Do you want to add \(meal.name) to your cart?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Add", style:.default))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            present(alert, animated: true)
-        
-        
-        
+        present(alert, animated: true)
     }
-    
-        
-    
 }

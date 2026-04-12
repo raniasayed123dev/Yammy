@@ -1,10 +1,3 @@
-//
-//  CartTableViewCell.swift
-//  Yammy
-//
-//  Created by rania on 21/02/2026.
-//
-
 import UIKit
 
 class CartTableViewCell: UITableViewCell {
@@ -19,25 +12,32 @@ class CartTableViewCell: UITableViewCell {
     @IBOutlet weak var quantityStepper: UIStepper!
     
     var onQuantityChange: ((Int) -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        let aspectConstraint = mealImage.heightAnchor.constraint(equalTo: mealImage.widthAnchor)
+        aspectConstraint.priority = UILayoutPriority(999)
+        aspectConstraint.isActive = true
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        mealImage.forceCircleMask()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
+
     @IBAction func sizeChanged(_ sender: UISegmentedControl) {
         let sizes = ["Small", "Medium", "Large","XLarge"]
-                let selectedSize = sizes[sender.selectedSegmentIndex]
+        let selectedSize = sizes[sender.selectedSegmentIndex]
         onSizeChange?(selectedSize)
     }
+
     @IBAction func quantityChanged(_ sender: UIStepper) {
         let currentQuantity = Int(sender.value)
         quantityLabel.text = "\(currentQuantity)"
         onQuantityChange?(currentQuantity)
     }
-    
 }

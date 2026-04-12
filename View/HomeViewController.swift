@@ -1,15 +1,8 @@
-//
-//  HomeViewController.swift
-//  Yammy
-//
-//  Created by rania on 19/12/2025.
-//
-
 import UIKit
 
 class HomeViewController: UIViewController {
     
- private let viewModel = HomeViewModel()
+    private let viewModel = HomeViewModel()
     var allMeals: [Meal] = []
     var filteredMeals: [Meal] = []
     let searchController = UISearchController(searchResultsController: nil)
@@ -29,7 +22,7 @@ class HomeViewController: UIViewController {
         categoriesCollectionView.delegate = self
         categoriesCollectionView.dataSource = self
         
-         bindViewModel()
+        bindViewModel()
         
         mealsCollectionView.delegate = self
         mealsCollectionView.dataSource = self
@@ -38,21 +31,20 @@ class HomeViewController: UIViewController {
         mealsCollectionView.reloadData()
         setupSearchController()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    mealsCollectionView.reloadData()
+        super.viewWillAppear(animated)
+        mealsCollectionView.reloadData()
     }
     
-   
-  private func bindViewModel() {
-      viewModel.onDataUpdated = { [weak self] in
-          guard let self = self else { return }
-          self.categoriesCollectionView.reloadData()
-          
-          self.filteredMeals = self.viewModel.getAllCurrentMeals()
-          self.mealsCollectionView.reloadData()
-          
-      }
+    private func bindViewModel() {
+        viewModel.onDataUpdated = { [weak self] in
+            guard let self = self else { return }
+            self.categoriesCollectionView.reloadData()
+            
+            self.filteredMeals = self.viewModel.getAllCurrentMeals()
+            self.mealsCollectionView.reloadData()
+        }
     }
     
     private func setupSearchController() {
@@ -62,12 +54,11 @@ class HomeViewController: UIViewController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
-        
     }
 }
+
 extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         if collectionView == categoriesCollectionView {
             return viewModel.numberOfCategories()
         }
@@ -84,7 +75,7 @@ extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSo
         else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealCell", for: indexPath) as! MealCollectionViewCell
             let meal = filteredMeals[indexPath.row]
-           let priceText = viewModel.priceText(for: meal)
+            let priceText = viewModel.priceText(for: meal)
             let isFav = DataManager.shared.isFavorite(meal: meal)
             
             cell.configure(with: meal, priceText:priceText, isFavorite: isFav)
@@ -93,7 +84,7 @@ extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSo
                 guard let self = self else { return }
                 
                 let meal = self.viewModel.meal(at: indexPath.row)
-                    DataManager.shared.toggleFavorite(meal: meal)
+                DataManager.shared.toggleFavorite(meal: meal)
                 collectionView.reloadItems(at: [indexPath])
             }
             return cell
@@ -107,17 +98,18 @@ extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSo
         }
         else{
             let meal = viewModel.meal(at: indexPath.row)
-                    openMealDetailsScreen(meal: meal)
+            openMealDetailsScreen(meal: meal)
         }
     }
-    private func  openMenuScreen(category : Category){
+    
+    private func openMenuScreen(category : Category){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let menuVC =  storyboard.instantiateViewController(withIdentifier: "MenuViewController" ) as! MenuViewController
         menuVC.menuItems = category.name
         navigationController?.pushViewController(menuVC, animated: true)
     }
-    private func  openMealDetailsScreen(meal:Meal){
-        
+    
+    private func openMealDetailsScreen(meal:Meal){
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let detailsVC = storyboard.instantiateViewController(withIdentifier: "MealDetailsViewController") as? MealDetailsViewController {
             detailsVC.selectedMeal = meal
@@ -125,6 +117,7 @@ extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSo
         }
     }
 }
+
 extension HomeViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchText = searchController.searchBar.text ?? ""
@@ -134,7 +127,8 @@ extension HomeViewController: UISearchResultsUpdating {
             let allMeals = DataManager.shared.getAllMealsForSearch()
             filteredMeals = allMeals.filter {
                 $0.name.lowercased().contains(searchText.lowercased())
-            }}
+            }
+        }
         self.mealsCollectionView.reloadData()
     }
 }

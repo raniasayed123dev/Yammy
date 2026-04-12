@@ -1,10 +1,3 @@
-//
-//  CartViewController.swift
-//  Yammy
-//
-//  Created by rania on 21/02/2026.
-//
-
 import UIKit
 
 class CartViewController: UIViewController {
@@ -34,12 +27,14 @@ class CartViewController: UIViewController {
         self.updateCartUI()
         cartTableView.alpha = 0
     }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !DataManager.shared.cartMeals.isEmpty {
-                animateTable()
-            }
+            animateTable()
+        }
     }
+
     func updateCartUI() {
         let cartItems = DataManager.shared.cartMeals
         let isEmpty = cartItems.isEmpty
@@ -49,11 +44,11 @@ class CartViewController: UIViewController {
         if !isEmpty {
             let totals = calculateTotals()
             updateLabels(subtotal: totals.subtotal, delivery: totals.delivery, total: totals.total)
-        }
-        else {
+        } else {
             emptyStateLabel.text = "Your Cart is empty, Order now 😋"
         }
     }
+
     func calculateTotals() -> (subtotal: Double, delivery: Double, total: Double) {
         let cartItems = DataManager.shared.cartMeals
         let subtotal = cartItems.reduce(0) { $0 + ($1.price * Double($1.quantity)) }
@@ -73,8 +68,9 @@ class CartViewController: UIViewController {
         grandTotalLabel.text = "\(total) EGP"
         checkoutButton.setTitle("Proceed to Checkout (\(total) EGP)", for: .normal)
     }
-    @IBAction func checkoutTapped(_ sender: Any){
-        let confirmAlert = UIAlertController(title: "Confirm Order",message: "Are you sure you want to place this order?",preferredStyle: .alert)
+
+    @IBAction func checkoutTapped(_ sender: Any) {
+        let confirmAlert = UIAlertController(title: "Confirm Order", message: "Are you sure you want to place this order?", preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "Place Order", style: .default) { _ in
             self.showSuccessAlert()
         }
@@ -83,8 +79,9 @@ class CartViewController: UIViewController {
         confirmAlert.addAction(cancelAction)
         present(confirmAlert, animated: true)
     }
+
     func showSuccessAlert() {
-        let successAlert = UIAlertController(title: "Success!",message: "Order placed successfully! 👨‍🍳",preferredStyle: .alert)
+        let successAlert = UIAlertController(title: "Success!", message: "Order placed successfully! 👨‍🍳", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "Great!", style: .default) { _ in
             self.clearCartAndRefresh()
         }
@@ -103,24 +100,23 @@ class CartViewController: UIViewController {
         cartTableView.layoutIfNeeded()
         cartTableView.alpha = 1
         let cells = cartTableView.visibleCells
-            let tableViewHeight = cartTableView.bounds.size.height
+        let tableViewHeight = cartTableView.bounds.size.height
         for cell in cells {
-                cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeight)
-                cell.alpha = 0
-            }
+            cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeight)
+            cell.alpha = 0
+        }
         var delayCounter = 0
-        for cell in cells{
-            UIView.animate(withDuration: 1.75, delay: Double(delayCounter) * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {cell.transform = CGAffineTransform.identity
-                 cell.alpha = 1
-                            }, completion: nil)
-                delayCounter += 1
-                        }
-        
+        for cell in cells {
+            UIView.animate(withDuration: 1.75, delay: Double(delayCounter) * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                cell.transform = CGAffineTransform.identity
+                cell.alpha = 1
+            }, completion: nil)
+            delayCounter += 1
+        }
     }
-   
 }
 
-extension CartViewController : UITableViewDelegate , UITableViewDataSource{
+extension CartViewController : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return DataManager.shared.cartMeals.count
     }
@@ -149,26 +145,26 @@ extension CartViewController : UITableViewDelegate , UITableViewDataSource{
             currentMeal.selectedSize = newSize
             
             if let duplicateIndex = DataManager.shared.cartMeals.firstIndex(where: {
-                $0.id == currentMeal.id && $0.selectedSize == newSize && $0 != currentMeal }) {
+                $0.id == currentMeal.id && $0.selectedSize == newSize && $0 != currentMeal
+            }) {
                 DataManager.shared.cartMeals[duplicateIndex].quantity += currentMeal.quantity
                 DataManager.shared.cartMeals.remove(at: currentIndex)
                 tableView.reloadData()
                 self.updateCartUI()
-            }
-            else{   DataManager.shared.cartMeals[indexPath.row].selectedSize = newSize
+            } else {
+                DataManager.shared.cartMeals[indexPath.row].selectedSize = newSize
                 tableView.reloadRows(at: [indexPath], with: .none)
                 self.updateCartUI()
-            }}
-        return cell
+            }
         }
+        return cell
+    }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             DataManager.shared.cartMeals.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             updateCartUI()
-        }}
+        }
     }
-    
-
-
+}

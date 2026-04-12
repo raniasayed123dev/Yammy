@@ -1,17 +1,9 @@
-//
-//  FavoritesViewController.swift
-//  Yammy
-//
-//  Created by rania on 20/02/2026.
-//
-
 import UIKit
 
 class FavoritesViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var emptyStateStackView: UIStackView!
     @IBOutlet weak var emptyStateLabel: UILabel!
-    
     @IBOutlet weak var favoriteHeartImage: UIImageView!
     
     override func viewWillAppear(_ animated: Bool) {
@@ -27,18 +19,16 @@ class FavoritesViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         var perspective = CATransform3DIdentity
-            perspective.m34 = -1.0 / 500.0
-            favoriteHeartImage.layer.transform = perspective
+        perspective.m34 = -1.0 / 500.0
+        favoriteHeartImage.layer.transform = perspective
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if DataManager.shared.favoriteMeals.isEmpty {
             animateHeart()
-                    }
-                
-            }
-        
+        }
+    }
     
     func updateFavoritesUI() {
         let isEmpty = DataManager.shared.favoriteMeals.isEmpty
@@ -47,37 +37,35 @@ class FavoritesViewController: UIViewController {
             self.emptyStateStackView.alpha = isEmpty ? 1 : 0
             self.tableView.isHidden = isEmpty
             self.emptyStateStackView.isHidden = !isEmpty
-            }
+        }
         
         if isEmpty {
             animateHeart()
-        }
-        else{
+        } else {
             tableView.reloadData()
         }
     }
     
     func animateHeart() {
         if favoriteHeartImage.layer.animation(forKey: "rotate3D") == nil {
-                let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
-                rotateAnimation.fromValue = 0
-                rotateAnimation.toValue = CGFloat.pi * 2.0
-                rotateAnimation.duration = 3.0
-                rotateAnimation.repeatCount = .infinity
-                rotateAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-                
-                favoriteHeartImage.layer.add(rotateAnimation, forKey: "rotate3D")
-            }
-        
+            let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
+            rotateAnimation.fromValue = 0
+            rotateAnimation.toValue = CGFloat.pi * 2.0
+            rotateAnimation.duration = 3.0
+            rotateAnimation.repeatCount = .infinity
+            rotateAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            
+            favoriteHeartImage.layer.add(rotateAnimation, forKey: "rotate3D")
+        }
     }
 }
+
 extension FavoritesViewController : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return DataManager.shared.favoriteMeals.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteCell", for: indexPath) as! FavoriteTableViewCell
         let meal = DataManager.shared.favoriteMeals[indexPath.row]
         cell.mealName.text = meal.name
@@ -91,6 +79,7 @@ extension FavoritesViewController : UITableViewDelegate , UITableViewDataSource 
         }
         return cell
     }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedMeal = DataManager.shared.favoriteMeals[indexPath.row]
         if let detailsVC = storyboard?.instantiateViewController(withIdentifier: "MealDetailsViewController") as? MealDetailsViewController {
@@ -98,7 +87,5 @@ extension FavoritesViewController : UITableViewDelegate , UITableViewDataSource 
             navigationController?.pushViewController(detailsVC, animated: true)
         }
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        
     }
 }

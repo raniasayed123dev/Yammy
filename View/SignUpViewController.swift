@@ -1,10 +1,3 @@
-//
-//  SignUpViewController.swift
-//  Yammy
-//
-//  Created by rania on 06/04/2026.
-//
-
 import UIKit
 import FirebaseAuth
 
@@ -26,36 +19,28 @@ class SignUpViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
     }
     
     @IBAction func signUpPressed(_ sender: Any) {
-       
-            let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            
-            if email.isEmpty || password.isEmpty {
-                print("Please fill in all fields")
-                return
-            }
-            
-             // Firebase method to create a new user
+        let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        
+        if email.isEmpty || password.isEmpty {
+            print("Please fill in all fields")
+            return
+        }
+        
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             if let error = error {
                 print("Sign Up Error: \(error.localizedDescription)")
-                // أظهري تنبيه لليوزر هنا لو حبيتي
                 return
             }
 
             print("Account created successfully!")
 
-            // 1. اطلبي تعديل بيانات المستخدم اللي لسه متسجل
             let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-            
-            // 2. حطي الاسم اللي في الـ TextField (تأكدي إن اسمه nameTextField عندك)
             changeRequest?.displayName = self?.nameTextField.text
 
-            // 3. قولي لفايربيز "سيف الاسم ده"
             changeRequest?.commitChanges { error in
                 if let error = error {
                     print("Error saving name: \(error.localizedDescription)")
@@ -63,13 +48,11 @@ class SignUpViewController: UIViewController {
                     print("Name saved!")
                 }
                 
-                // 4. دلوقتى انقليه للـ Home وأنتي مطمنة إن الاسم اتحفظ
                 self?.navigateToHome()
             }
         }
-        }
-   
-   
+    }
+    
     @objc func keyboardWillShow(notification: NSNotification) {
         if ((notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
             if self.view.frame.origin.y == 0 {
@@ -80,18 +63,17 @@ class SignUpViewController: UIViewController {
 
     @objc func keyboardWillHide(notification: NSNotification) {
         if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0 // رجعي الشاشة لمكانها
+            self.view.frame.origin.y = 0
         }
     }
 }
+
 extension SignUpViewController {
     
     private func setupUI() {
-        // إضافة أزرار العين للباسورد
         setupPasswordToggle(for: passwordTextField)
         setupPasswordToggle(for: confirmPasswordTextField)
         
-        // إعدادات الكيبورد واللغة
         emailTextField.keyboardType = .emailAddress
         phoneTextField.keyboardType = .asciiCapableNumberPad
         
@@ -100,7 +82,6 @@ extension SignUpViewController {
             $0?.textAlignment = .left
         }
         
-        // تحديث الحالة الأولية (الزرار يبدأ مطفي)
         validateFields()
     }
     
@@ -123,32 +104,27 @@ extension SignUpViewController {
     }
 }
 
-// MARK: - Validation & Logic (التعامل مع المخ)
 extension SignUpViewController {
     
     private func setupActions() {
-        // مراقبة كل الخانات بدالة واحدة "مديرة"
         [nameTextField, phoneTextField, emailTextField, passwordTextField, confirmPasswordTextField].forEach {
             $0?.addTarget(self, action: #selector(validateFields), for: .editingChanged)
         }
     }
     
     @objc private func validateFields() {
-        // الدالة المديرة: بتنادي المخ وتوزع المهام
         let isNameOk = viewModel.isNameValid(nameTextField.text)
         let isPhoneOk = viewModel.isPhoneValid(phoneTextField.text)
         let isEmailOk = viewModel.isEmailValid(emailTextField.text)
         let isPassOk = viewModel.isPasswordValid(passwordTextField.text)
         let isMatchOk = viewModel.isPasswordMatched(passwordTextField.text, confirmPasswordTextField.text)
         
-        // 1. مهمة التلوين
         updateFieldBorder(nameTextField, isValid: isNameOk)
         updateFieldBorder(phoneTextField, isValid: isPhoneOk)
         updateFieldBorder(emailTextField, isValid: isEmailOk)
         updateFieldBorder(passwordTextField, isValid: isPassOk)
         updateFieldBorder(confirmPasswordTextField, isValid: isMatchOk)
         
-        // 2. مهمة الزرار
         let isFormValid = isNameOk && isPhoneOk && isEmailOk && isPassOk && isMatchOk
         updateButtonState(isValid: isFormValid)
     }
@@ -172,7 +148,6 @@ extension SignUpViewController {
     }
 }
 
-// MARK: - Navigation & Helpers
 extension SignUpViewController {
     
     func navigateToHome() {
@@ -186,3 +161,4 @@ extension SignUpViewController {
         view.endEditing(true)
     }
 }
+
