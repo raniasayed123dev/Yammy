@@ -8,12 +8,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if Auth.auth().currentUser != nil {
+        
+        let isSocialLoggedIn = UserDefaults.standard.bool(forKey: "isSocialLogin")
+        let isFirebaseLoggedIn = Auth.auth().currentUser != nil
+        
+        if isFirebaseLoggedIn || isSocialLoggedIn {
             let homeVC = storyboard.instantiateViewController(withIdentifier: "MainTabBar")
             window?.rootViewController = homeVC
         } else {
-            let loginVC = storyboard.instantiateViewController(withIdentifier: "WelcomeViewController")
-            window?.rootViewController = loginVC
+            if let initialVC = storyboard.instantiateInitialViewController() {
+                window?.rootViewController = initialVC
+            } else {
+                let loginVC = storyboard.instantiateViewController(withIdentifier: "WelcomeViewController")
+                window?.rootViewController = loginVC
+            }
         }
         window?.makeKeyAndVisible()
     }

@@ -12,10 +12,10 @@ class HomeViewModel {
     
     private func loadCategories() {
         categories = [
-            Category(name: "Burgers", imageName: "burger3"),
-            Category(name: "Fries", imageName: "fries"),
+            Category(name: "Sandwich", imageName: "shawarma"),
             Category(name: "Pizzas", imageName: "pizza"),
-            Category(name: "Drinks", imageName: "soda")
+            Category(name: "Drinks", imageName: "soda"),
+            Category(name: "Extras", imageName: "ketchup")
         ]
         onDataUpdated?()
     }
@@ -30,10 +30,10 @@ class HomeViewModel {
 
     private func loadMeals() {
         meals = [
-            Meal(id: "100", name: "Cheese Burger", imageName: "burger3", basePrice: 40),
-            Meal(id: "200", name: "Margherita", imageName: "pizza", basePrice: 80.5),
-            Meal(id: "300", name: "Fries", imageName: "fries", basePrice: 20.5),
-            Meal(id: "400", name: "Soda", imageName: "soda", basePrice: 10)
+            Meal(id: "100", name: "Cheese Burger", imageName: "burger3", basePrice: 30),
+            Meal(id: "200", name: "Margherita", imageName: "pizza", basePrice: 60),
+            Meal(id: "300", name: "Fries", imageName: "fries", basePrice: 10.5),
+            Meal(id: "401", name: "Water", imageName: "water", basePrice: 7)
         ]
     }
 

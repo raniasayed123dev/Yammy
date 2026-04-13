@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pizza.jpg",
+      "filename" : "pizza.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "pizza 1.jpg",
+      "filename" : "pizza 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "pizza 2.jpg",
+      "filename" : "pizza 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

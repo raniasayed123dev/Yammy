@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Pepperoni.jpeg",
+      "filename" : "Pepperoni.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Pepperoni 2.jpeg",
+      "filename" : "Pepperoni 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Pepperoni 1.jpeg",
+      "filename" : "Pepperoni 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

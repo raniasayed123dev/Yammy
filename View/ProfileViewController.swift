@@ -46,6 +46,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
         
         let base64String = imageData.base64EncodedString()
+        UserDefaults.standard.set(base64String, forKey: "cachedProfileImageBase64")
+        
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
         Firestore.firestore().collection("users").document(uid).setData([
@@ -63,8 +65,15 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         if UserDefaults.standard.bool(forKey: "isSocialLogin") {
             emailLabel.text = "social.demo@yammy.com"
             nameLabel.text = "Yammy Social User"
-            profileImageView.image = UIImage(systemName: "person.circle.fill")
-            profileImageView.tintColor = UIColor(named: "PrimaryColor")
+            
+            if let base64String = UserDefaults.standard.string(forKey: "cachedProfileImageBase64"),
+               let imageData = Data(base64Encoded: base64String),
+               let cachedImage = UIImage(data: imageData) {
+                profileImageView.image = cachedImage
+            } else {
+                profileImageView.image = UIImage(systemName: "person.circle.fill")
+                profileImageView.tintColor = UIColor(named: "PrimaryColor")
+            }
             return
         }
 
@@ -144,6 +153,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     @IBAction func logoutTapped(_ sender: Any) {
         UserDefaults.standard.set(false, forKey: "isSocialLogin")
+        UserDefaults.standard.removeObject(forKey: "cachedProfileImageBase64")
+        DataManager.shared.clearAllData()
         let firebaseAuth = Auth.auth()
         do {
             try firebaseAuth.signOut()

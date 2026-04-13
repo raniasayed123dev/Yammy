@@ -82,6 +82,12 @@ extension SignUpViewController {
             $0?.textAlignment = .left
         }
         
+        nameTextField.placeholder = "Full Name (First & Last)"
+        phoneTextField.placeholder = "Enter your phone number (11 numbers)"
+        emailTextField.placeholder = "Enter your email address"
+        passwordTextField.placeholder = "Write 8+ chars (Uppercase, lowercase, number)"
+        confirmPasswordTextField.placeholder = "Confirm Password"
+        
         validateFields()
     }
     

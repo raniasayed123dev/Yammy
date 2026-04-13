@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "soda.jpeg",
+      "filename" : "soda.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "soda 1.jpeg",
+      "filename" : "soda 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "soda 2.jpeg",
+      "filename" : "soda 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

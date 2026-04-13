@@ -14,7 +14,11 @@ class MealCollectionViewCell: UICollectionViewCell {
 
     func configure(with meal: Meal, priceText: String, isFavorite: Bool) {
         mealImageView.image = UIImage(named: meal.imageName)
-        mealImageView.makeCircular()
+        mealImageView.contentMode = .scaleAspectFit
+        mealImageView.backgroundColor = .clear
+        mealImageView.layer.mask = nil
+        mealImageView.clipsToBounds = false
+        
         mealNameLabel.text = meal.name
         mealNameLabel.makeRounded(radius: 10)
         mealPriceLabel.text = priceText
@@ -33,7 +37,7 @@ class MealCollectionViewCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        mealImageView.forceCircleMask()
+        // Removed forceCircleMask to show full PNG
     }
 }
 

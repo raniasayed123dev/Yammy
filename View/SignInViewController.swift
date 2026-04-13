@@ -128,6 +128,9 @@ extension SignInViewController {
         emailTextField.keyboardType = .emailAddress
         passwordTextField.isSecureTextEntry = true
         
+        emailTextField.placeholder = "Enter your email address"
+        passwordTextField.placeholder = "Write 8+ chars (Uppercase, lowercase, number))"
+        
         [emailTextField, passwordTextField].forEach {
             $0?.addTarget(self, action: #selector(validateFields), for: .editingChanged)
             $0?.semanticContentAttribute = .forceLeftToRight

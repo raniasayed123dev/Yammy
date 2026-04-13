@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "chickenBurger.jpeg",
+      "filename" : "chickenBurger.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "chickenBurger 1.jpeg",
+      "filename" : "chickenBurger 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "chickenBurger 2.jpeg",
+      "filename" : "chickenBurger 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -35,32 +35,32 @@
                                     <constraint firstAttribute="height" constant="120" id="8Wd-3K-tBt"/>
                                 </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="fPE-HJ-muJ">
-                                    <size key="itemSize" width="90" height="44"/>
+                                    <size key="itemSize" width="90" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CategoryCell" id="Yr8-IP-l1g" customClass="CategoryCollectionViewCell" customModule="Yammy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="10" width="70" height="100"/>
+                                        <rect key="frame" x="0.0" y="5" width="70" height="110"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="x3n-Wg-WPI">
-                                            <rect key="frame" x="0.0" y="0.0" width="70" height="100"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="70" height="110"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleAspectFit" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="j2j-dH-m5V">
-                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="100"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="70" height="110"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OAy-2x-tRg">
                                                             <rect key="frame" x="0.0" y="0.0" width="70" height="90"/>
-                                                            <color key="backgroundColor" red="0.15385904719999999" green="0.35451187909999998" blue="0.47946635250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                            <color key="backgroundColor" red="0.85571444419999998" green="0.89344487299999997" blue="0.89474888389999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="90" id="Vn6-Uu-271"/>
                                                                 <constraint firstAttribute="height" constant="90" id="pFf-qz-gzM"/>
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N4P-8B-FLA">
-                                                            <rect key="frame" x="0.0" y="94" width="70" height="6"/>
+                                                            <rect key="frame" x="0.0" y="94" width="70" height="16"/>
                                                             <color key="backgroundColor" red="0.85571444419999998" green="0.89344487299999997" blue="0.89474888389999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="70" id="QOz-0h-3b3"/>
@@ -91,7 +91,7 @@
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <color key="backgroundColor" red="0.84326392412185669" green="0.050180114805698395" blue="0.96902495622634888" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <size key="customSize" width="70" height="100"/>
+                                        <size key="customSize" width="70" height="110"/>
                                         <connections>
                                             <outlet property="categoryImageView" destination="OAy-2x-tRg" id="FBq-gE-2JJ"/>
                                             <outlet property="categoryNameLabel" destination="N4P-8B-FLA" id="2lj-2m-ZgQ"/>
@@ -121,10 +121,10 @@
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CS6-9m-yUk">
                                                             <rect key="frame" x="0.0" y="0.0" width="165" height="134"/>
-                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <color key="backgroundColor" red="0.85571444419999998" green="0.89344487299999997" blue="0.89474888389999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="150" id="Mu8-qR-fx8"/>
-                                                                <constraint firstAttribute="width" constant="150" id="fs6-Ct-jb6"/>
+                                                                <constraint firstAttribute="height" constant="90" id="Mu8-qR-fx8"/>
+                                                                <constraint firstAttribute="width" constant="90" id="fs6-Ct-jb6"/>
                                                             </constraints>
                                                         </imageView>
                                                         <stackView opaque="NO" contentMode="center" axis="vertical" distribution="fillEqually" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="21g-YA-bvd">
@@ -415,7 +415,7 @@
                                                 </label>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dOb-Ty-MGB">
                                                     <rect key="frame" x="30" y="25" width="130" height="100"/>
-                                                    <color key="backgroundColor" red="0.15385904719999999" green="0.35451187909999998" blue="0.47946635250000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                    <color key="backgroundColor" red="0.85571444419999998" green="0.89344487299999997" blue="0.89474888389999996" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="130" id="UOV-Sq-1P3"/>
                                                         <constraint firstAttribute="height" constant="130" id="bhi-7O-o8C"/>

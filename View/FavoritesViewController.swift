@@ -68,10 +68,27 @@ extension FavoritesViewController : UITableViewDelegate , UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FavoriteCell", for: indexPath) as! FavoriteTableViewCell
         let meal = DataManager.shared.favoriteMeals[indexPath.row]
-        cell.mealName.text = meal.name
-        cell.mealImage.image = UIImage(named: meal.imageName)
-        cell.mealPrice.text = "\(meal.price) LE"
+        
+        // Always look up the fresh meal from master data using ID to get correct imageName
+        let freshMeal = DataManager.shared.getAllMealsForSearch().first(where: { $0.id == meal.id }) ?? meal
+        
+        cell.mealName.text = freshMeal.name
+        cell.mealPrice.text = "\(freshMeal.price) LE"
         cell.favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        
+        // Load image safely with fallback
+        if let image = UIImage(named: freshMeal.imageName) {
+            cell.mealImage.image = image
+        } else if let fallback = UIImage(named: meal.imageName) {
+            cell.mealImage.image = fallback
+        } else {
+            cell.mealImage.image = UIImage(systemName: "fork.knife")
+        }
+        
+        cell.mealImage.backgroundColor = .clear
+        cell.mealImage.contentMode = .scaleAspectFit
+        cell.mealImage.clipsToBounds = false
+        cell.mealImage.layer.mask = nil
         
         cell.onFavoriteClick = { [weak self] in
             DataManager.shared.toggleFavorite(meal: meal)
