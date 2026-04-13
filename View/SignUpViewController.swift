@@ -2,9 +2,12 @@ import UIKit
 import FirebaseAuth
 
 class SignUpViewController: UIViewController {
-    private let viewModel = SignUpViewModel()
-    let myColor = UIColor(named: "PrimaryColor") ?? .green
     
+    // MARK: - Properties
+    private let viewModel = SignUpViewModel()
+    private let myColor = UIColor(named: "PrimaryColor") ?? .green
+    
+    // MARK: - IBOutlets
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -12,15 +15,39 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var creatAccontBotton: UIButton!
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupActions()
-        
+        setupObservers()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+
+    // MARK: - Observers Setup
+    private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        if ((notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= 300
+            }
+        }
+    }
+
+    @objc private func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
     
+    // MARK: - IBActions
     @IBAction func signUpPressed(_ sender: Any) {
         let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -35,41 +62,28 @@ class SignUpViewController: UIViewController {
                 print("Sign Up Error: \(error.localizedDescription)")
                 return
             }
-
             print("Account created successfully!")
-
+            
             let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
             changeRequest?.displayName = self?.nameTextField.text
-
             changeRequest?.commitChanges { error in
                 if let error = error {
                     print("Error saving name: \(error.localizedDescription)")
                 } else {
                     print("Name saved!")
                 }
-                
                 self?.navigateToHome()
             }
         }
     }
     
-    @objc func keyboardWillShow(notification: NSNotification) {
-        if ((notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
-            if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= 300
-            }
-        }
-    }
-
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if self.view.frame.origin.y != 0 {
-            self.view.frame.origin.y = 0
-        }
+    @IBAction func backButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
 }
 
+// MARK: - UI Setup & Validation
 extension SignUpViewController {
-    
     private func setupUI() {
         setupPasswordToggle(for: passwordTextField)
         setupPasswordToggle(for: confirmPasswordTextField)
@@ -83,7 +97,7 @@ extension SignUpViewController {
         }
         
         nameTextField.placeholder = "Full Name (First & Last)"
-        phoneTextField.placeholder = "Enter your phone number (11 numbers)"
+        phoneTextField.placeholder = "Enter your phone number(11 number)"
         emailTextField.placeholder = "Enter your email address"
         passwordTextField.placeholder = "Write 8+ chars (Uppercase, lowercase, number)"
         confirmPasswordTextField.placeholder = "Confirm Password"
@@ -108,9 +122,6 @@ extension SignUpViewController {
             textField.isSecureTextEntry.toggle()
         }
     }
-}
-
-extension SignUpViewController {
     
     private func setupActions() {
         [nameTextField, phoneTextField, emailTextField, passwordTextField, confirmPasswordTextField].forEach {
@@ -154,21 +165,13 @@ extension SignUpViewController {
     }
 }
 
+// MARK: - Navigation
 extension SignUpViewController {
-    
-    func navigateToHome() {
+    private func navigateToHome() {
         if let homeVC = storyboard?.instantiateViewController(withIdentifier: "MainTabBar") {
             homeVC.modalPresentationStyle = .fullScreen
             present(homeVC, animated: true)
         }
-    }
-    
-    @IBAction func backButtonTapped(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
     }
 }
 

@@ -3,25 +3,36 @@ import FirebaseAuth
 
 class SignInViewController: UIViewController {
     
+    // MARK: - Properties
     private let viewModel = SignInViewModel()
     
+    // MARK: - IBOutlets
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var signinButton: UIButton!
     @IBOutlet weak var facebookImageView: UIImageView!
     @IBOutlet weak var twitterImageView: UIImageView!
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.keyboardLayoutGuide.followsUndockedKeyboard = true
         setupUI()
         setupSocialLoginGestures()
-        
+        setupObservers()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+
+    // MARK: - Observers Setup
+    private func setupObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-    @objc func keyboardWillShow(notification: NSNotification) {
+    @objc private func keyboardWillShow(notification: NSNotification) {
         if ((notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= 250
@@ -29,14 +40,14 @@ class SignInViewController: UIViewController {
         }
     }
 
-    @objc func keyboardWillHide(notification: NSNotification) {
+    @objc private func keyboardWillHide(notification: NSNotification) {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }
     }
     
+    // MARK: - IBActions
     @IBAction func signInBotton(_ sender: Any) {
-        
         guard let email = emailTextField.text, !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty else {
             showErrorAlert(message: "Please fill in all fields")
@@ -48,7 +59,6 @@ class SignInViewController: UIViewController {
                 self?.showErrorAlert(message: error.localizedDescription)
                 return
             }
-            
             self?.navigateToHome()
         }
     }
@@ -63,7 +73,6 @@ class SignInViewController: UIViewController {
         
         let sendAction = UIAlertAction(title: "Send", style: .default) { _ in
             if let email = alert.textFields?.first?.text, !email.isEmpty {
-                
                 Auth.auth().sendPasswordReset(withEmail: email) { error in
                     if let error = error {
                         print("Error: \(error.localizedDescription)")
@@ -76,10 +85,14 @@ class SignInViewController: UIViewController {
         
         alert.addAction(sendAction)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
         present(alert, animated: true)
     }
+    
+    @IBAction func backButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 
+    // MARK: - Social Login Handling
     private func setupSocialLoginGestures() {
         let facebookTap = UITapGestureRecognizer(target: self, action: #selector(facebookTapped))
         facebookImageView.addGestureRecognizer(facebookTap)
@@ -100,8 +113,8 @@ class SignInViewController: UIViewController {
 
     private func handleSocialLogin(platform: String) {
         let alert = UIAlertController(title: "Sign in with \(platform)", 
-                                    message: "Would you like to sign in using your \(platform) account?", 
-                                    preferredStyle: .alert)
+                                      message: "Would you like to sign in using your \(platform) account?", 
+                                      preferredStyle: .alert)
         
         let confirmAction = UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
             self?.view.showLoadingOverlay()
@@ -114,31 +127,27 @@ class SignInViewController: UIViewController {
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
         alert.addAction(confirmAction)
         alert.addAction(cancelAction)
-        
         present(alert, animated: true)
     }
 }
 
+// MARK: - UI Setup & Validation
 extension SignInViewController {
-    
-    func setupUI() {
+    private func setupUI() {
         emailTextField.keyboardType = .emailAddress
         passwordTextField.isSecureTextEntry = true
         
         emailTextField.placeholder = "Enter your email address"
-        passwordTextField.placeholder = "Write 8+ chars (Uppercase, lowercase, number))"
+        passwordTextField.placeholder = "Write 8+ chars (Uppercase, lowercase, number)"
         
         [emailTextField, passwordTextField].forEach {
             $0?.addTarget(self, action: #selector(validateFields), for: .editingChanged)
             $0?.semanticContentAttribute = .forceLeftToRight
             $0?.textAlignment = .left
-            
             $0?.borderStyle = .none
             $0?.backgroundColor = .white
-            
             $0?.layer.borderWidth = 1.0
             $0?.layer.cornerRadius = 8
             $0?.layer.borderColor = UIColor.lightGray.cgColor
@@ -181,7 +190,6 @@ extension SignInViewController {
     
     private func updateTextFieldBorder(_ textField: UITextField, isValid: Bool) {
         let text = textField.text ?? ""
-        
         textField.layer.borderWidth = 1.0
         textField.layer.cornerRadius = 8
         
@@ -207,26 +215,18 @@ extension SignInViewController {
     }
 }
 
+// MARK: - Navigation & Alerts
 extension SignInViewController {
-    
-    func navigateToHome() {
+    private func navigateToHome() {
         if let homeVC = storyboard?.instantiateViewController(withIdentifier: "MainTabBar") {
             homeVC.modalPresentationStyle = .fullScreen
             present(homeVC, animated: true)
         }
     }
     
-    func showErrorAlert(message: String) {
+    private func showErrorAlert(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
-    }
-
-    @IBAction func backButtonTapped(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
     }
 }

@@ -3,13 +3,17 @@ import FirebaseFirestore
 import FirebaseAuth
 import SDWebImage
 
-class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ProfileViewController: UIViewController {
+    
+    // MARK: - Properties
     private let viewModel = SignUpViewModel()
     
+    // MARK: - IBOutlets
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         loadUserData()
@@ -24,43 +28,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         profileImageView.isUserInteractionEnabled = true
     }
 
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
-    }
-   
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let editedImage = info[.editedImage] as? UIImage {
-            self.profileImageView.image = editedImage
-            self.profileImageView.makeCircular()
-            self.uploadProfileImage(image: editedImage)
-        }
-        picker.dismiss(animated: true)
-    }
-
-    func uploadProfileImage(image: UIImage) {
-        guard let imageData = image.jpegData(compressionQuality: 0.2) else {
-            self.showAlert(title: "Error", message: "Could not process image")
-            return
-        }
-        
-        let base64String = imageData.base64EncodedString()
-        UserDefaults.standard.set(base64String, forKey: "cachedProfileImageBase64")
-        
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        Firestore.firestore().collection("users").document(uid).setData([
-            "profileImageBase64": base64String
-        ], merge: true) { [weak self] error in
-            if let error = error {
-                self?.showAlert(title: "Error", message: "Failed to save to Firestore: \(error.localizedDescription)")
-            } else {
-                self?.showAlert(title: "Success", message: "Profile image saved successfully!")
-            }
-        }
-    }
-
+    // MARK: - User Data Handling
     func loadUserData() {
         if UserDefaults.standard.bool(forKey: "isSocialLogin") {
             emailLabel.text = "social.demo@yammy.com"
@@ -95,7 +63,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             }
         }
     }
-
+    
+    // MARK: - IBActions
     @IBAction func imageTapped(_ sender: Any) {
         let alert = UIAlertController(title: "Choose Profile Image", message: nil, preferredStyle: .actionSheet)
         
@@ -113,14 +82,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         present(alert, animated: true)
     }
 
-    private func openPicker(source: UIImagePickerController.SourceType) {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = source
-        imagePicker.allowsEditing = true
-        present(imagePicker, animated: true)
-    }
-
     @IBAction func facebookTapped(_ sender: Any) {
         shareApp(via: "Facebook")
     }
@@ -129,35 +90,13 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         shareApp(via: "Twitter")
     }
 
-    private func shareApp(via platform: String) {
-        let appName = "Yammy 🍔"
-        let message = "I'm using \(appName) to order delicious food! You should try it too 🎉"
-        let shareURL = URL(string: "https://www.yammy-app.com") // Replace with your real app link
-        
-        var itemsToShare: [Any] = [message]
-        if let url = shareURL {
-            itemsToShare.append(url)
-        }
-        
-        let activityVC = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
-        
-        // On iPad, the popover needs an anchor
-        if let popover = activityVC.popoverPresentationController {
-            popover.sourceView = self.view
-            popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
-            popover.permittedArrowDirections = []
-        }
-        
-        present(activityVC, animated: true)
-    }
-    
     @IBAction func logoutTapped(_ sender: Any) {
         UserDefaults.standard.set(false, forKey: "isSocialLogin")
         UserDefaults.standard.removeObject(forKey: "cachedProfileImageBase64")
         DataManager.shared.clearAllData()
-        let firebaseAuth = Auth.auth()
+        
         do {
-            try firebaseAuth.signOut()
+            try Auth.auth().signOut()
             if let loginVC = storyboard?.instantiateViewController(withIdentifier: "WelcomeViewController") {
                 loginVC.modalPresentationStyle = .fullScreen
                 present(loginVC, animated: true)
@@ -176,22 +115,22 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
         
         let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
-            if let newName = alert.textFields?.first?.text {
-                if self?.viewModel.isNameValid(newName) == true {
-                    let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-                    changeRequest?.displayName = newName
-                    changeRequest?.commitChanges { error in
-                        if let error = error {
-                            print("Firebase Error: \(error.localizedDescription)")
-                        } else {
-                            DispatchQueue.main.async {
-                                self?.nameLabel.text = newName
-                            }
+            guard let self = self else { return }
+            
+            if let newName = alert.textFields?.first?.text, self.viewModel.isNameValid(newName) {
+                let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+                changeRequest?.displayName = newName
+                changeRequest?.commitChanges { error in
+                    if let error = error {
+                        print("Firebase Error: \(error.localizedDescription)")
+                    } else {
+                        DispatchQueue.main.async {
+                            self.nameLabel.text = newName
                         }
                     }
-                } else {
-                    self?.showErrorAlert(message: "Invalid name! Please enter at least two names.")
                 }
+            } else {
+                self.showErrorAlert(message: "Invalid name! Please enter at least two names.")
             }
         }
         
@@ -199,7 +138,79 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }
+}
 
+// MARK: - UIImagePickerControllerDelegate & Navigation
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    private func openPicker(source: UIImagePickerController.SourceType) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = source
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let editedImage = info[.editedImage] as? UIImage {
+            self.profileImageView.image = editedImage
+            self.profileImageView.makeCircular()
+            self.uploadProfileImage(image: editedImage)
+        }
+        picker.dismiss(animated: true)
+    }
+
+    func uploadProfileImage(image: UIImage) {
+        guard let imageData = image.jpegData(compressionQuality: 0.2) else {
+            self.showAlert(title: "Error", message: "Could not process image")
+            return
+        }
+        
+        let base64String = imageData.base64EncodedString()
+        UserDefaults.standard.set(base64String, forKey: "cachedProfileImageBase64")
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        Firestore.firestore().collection("users").document(uid).setData([
+            "profileImageBase64": base64String
+        ], merge: true) { [weak self] error in
+            if let error = error {
+                self?.showAlert(title: "Error", message: "Failed to save to Firestore: \(error.localizedDescription)")
+            } else {
+                self?.showAlert(title: "Success", message: "Profile image saved successfully!")
+            }
+        }
+    }
+}
+
+// MARK: - Utilities and Sharing
+extension ProfileViewController {
+    private func shareApp(via platform: String) {
+        let appName = "Yammy 🍔"
+        let message = "I'm using \(appName) to order delicious food! You should try it too 🎉"
+        let shareURL = URL(string: "https://www.yammy-app.com")
+        
+        var itemsToShare: [Any] = [message]
+        if let url = shareURL {
+            itemsToShare.append(url)
+        }
+        
+        let activityVC = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+        
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = self.view
+            popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        
+        present(activityVC, animated: true)
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
     func showErrorAlert(message: String) {
         let errorAlert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         errorAlert.addAction(UIAlertAction(title: "OK", style: .default))

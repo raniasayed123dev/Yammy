@@ -2,34 +2,29 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    // MARK: - Properties
     private let viewModel = HomeViewModel()
     var allMeals: [Meal] = []
     var filteredMeals: [Meal] = []
     let searchController = UISearchController(searchResultsController: nil)
     
+    // MARK: - IBOutlets
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var pupularMeals: UILabel!
     @IBOutlet weak var topImageView: UIImageView!
     @IBOutlet weak var categoriesCollectionView: UICollectionView!
     @IBOutlet weak var mealsCollectionView: UICollectionView!
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        topImageView.image = UIImage(named: "background1")
-        categoryLabel.makeRounded(radius: 10)
-        pupularMeals.makeRounded(radius: 10)
-        
-        categoriesCollectionView.delegate = self
-        categoriesCollectionView.dataSource = self
-        
+        setupUI()
+        setupCollectionViews()
+        setupSearchController()
         bindViewModel()
         
-        mealsCollectionView.delegate = self
-        mealsCollectionView.dataSource = self
-        mealsCollectionView.collectionViewLayout.invalidateLayout()
         filteredMeals = viewModel.getAllCurrentMeals()
         mealsCollectionView.reloadData()
-        setupSearchController()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,16 +32,22 @@ class HomeViewController: UIViewController {
         mealsCollectionView.reloadData()
     }
     
-    private func bindViewModel() {
-        viewModel.onDataUpdated = { [weak self] in
-            guard let self = self else { return }
-            self.categoriesCollectionView.reloadData()
-            
-            self.filteredMeals = self.viewModel.getAllCurrentMeals()
-            self.mealsCollectionView.reloadData()
-        }
+    // MARK: - Setup UI
+    private func setupUI() {
+        topImageView.image = UIImage(named: "background1")
+        categoryLabel.makeRounded(radius: 10)
+        pupularMeals.makeRounded(radius: 10)
     }
-    
+
+    private func setupCollectionViews() {
+        categoriesCollectionView.delegate = self
+        categoriesCollectionView.dataSource = self
+        
+        mealsCollectionView.delegate = self
+        mealsCollectionView.dataSource = self
+        mealsCollectionView.collectionViewLayout.invalidateLayout()
+    }
+
     private func setupSearchController() {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -55,9 +56,37 @@ class HomeViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
     }
+
+    // MARK: - ViewModel Binding
+    private func bindViewModel() {
+        viewModel.onDataUpdated = { [weak self] in
+            guard let self = self else { return }
+            self.categoriesCollectionView.reloadData()
+            self.filteredMeals = self.viewModel.getAllCurrentMeals()
+            self.mealsCollectionView.reloadData()
+        }
+    }
+    
+    // MARK: - Navigation
+    private func openMenuScreen(category: Category) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let menuVC = storyboard.instantiateViewController(withIdentifier: "MenuViewController") as! MenuViewController
+        menuVC.menuItems = category.name
+        navigationController?.pushViewController(menuVC, animated: true)
+    }
+    
+    private func openMealDetailsScreen(meal: Meal) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let detailsVC = storyboard.instantiateViewController(withIdentifier: "MealDetailsViewController") as? MealDetailsViewController {
+            detailsVC.selectedMeal = meal
+            navigationController?.pushViewController(detailsVC, animated: true)
+        }
+    }
 }
 
-extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSource {
+// MARK: - UICollectionView Delegate & DataSource
+extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == categoriesCollectionView {
             return viewModel.numberOfCategories()
@@ -71,20 +100,18 @@ extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSo
             let category = viewModel.category(at: indexPath.row)
             cell.configure(with: category)
             return cell
-        }
-        else {
+        } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MealCell", for: indexPath) as! MealCollectionViewCell
             let meal = filteredMeals[indexPath.row]
             let priceText = viewModel.priceText(for: meal)
             let isFav = DataManager.shared.isFavorite(meal: meal)
             
-            cell.configure(with: meal, priceText:priceText, isFavorite: isFav)
+            cell.configure(with: meal, priceText: priceText, isFavorite: isFav)
             
             cell.onFavoriteClick = { [weak self] in
                 guard let self = self else { return }
-                
-                let meal = self.viewModel.meal(at: indexPath.row)
-                DataManager.shared.toggleFavorite(meal: meal)
+                let selectedMeal = self.viewModel.meal(at: indexPath.row)
+                DataManager.shared.toggleFavorite(meal: selectedMeal)
                 collectionView.reloadItems(at: [indexPath])
             }
             return cell
@@ -92,32 +119,17 @@ extension HomeViewController : UICollectionViewDelegate , UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == categoriesCollectionView{
-            let item =  viewModel.category(at: indexPath.row)
+        if collectionView == categoriesCollectionView {
+            let item = viewModel.category(at: indexPath.row)
             openMenuScreen(category: item)
-        }
-        else{
+        } else {
             let meal = viewModel.meal(at: indexPath.row)
             openMealDetailsScreen(meal: meal)
         }
     }
-    
-    private func openMenuScreen(category : Category){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let menuVC =  storyboard.instantiateViewController(withIdentifier: "MenuViewController" ) as! MenuViewController
-        menuVC.menuItems = category.name
-        navigationController?.pushViewController(menuVC, animated: true)
-    }
-    
-    private func openMealDetailsScreen(meal:Meal){
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let detailsVC = storyboard.instantiateViewController(withIdentifier: "MealDetailsViewController") as? MealDetailsViewController {
-            detailsVC.selectedMeal = meal
-            navigationController?.pushViewController(detailsVC, animated: true)
-        }
-    }
 }
 
+// MARK: - UISearchResultsUpdating
 extension HomeViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchText = searchController.searchBar.text ?? ""
